@@ -28,10 +28,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install dependencies
+      -       - name: Install dependencies
         working-directory: 5_android_app
         run: |
           npm install
+          if [ ! -d android ]; then npx cap add android; fi
           npx cap sync android
 
       - name: Build APK
