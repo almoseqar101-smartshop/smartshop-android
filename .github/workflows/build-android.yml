@@ -6,41 +6,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Unzip project
         run: |
           unzip -o 5_android_app.zip
-          ls -la
           ls -la 5_android_app
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
-
-      -       - name: Install dependencies
+      - name: Install dependencies
         working-directory: 5_android_app
         run: |
           npm install
           if [ ! -d android ]; then npx cap add android; fi
           npx cap sync android
-
       - name: Build APK
         working-directory: 5_android_app/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --stacktrace
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
