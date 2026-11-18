@@ -1,35 +1,45 @@
 name: Build Android APK
+
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Unzip project
         run: |
           unzip -o 5_android_app.zip
-          ls 5_android_app
+          ls -la
+          ls -la 5_android_app
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+
       - name: Install dependencies
         working-directory: 5_android_app
-        run: npm install
-      - name: Sync Capacitor
-        working-directory: 5_android_app
-        run: npx cap sync android
+        run: |
+          npm install
+          npx cap sync android
+
       - name: Build APK
         working-directory: 5_android_app/android
-        run: ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
